@@ -56,6 +56,9 @@
 <script>
 import axios from 'axios'
 
+//var apiURL = 'http://localhost:5000'
+var apiURL = 'https://eink-api.jsanr.dev'
+
 export default {
   data() {
     return {
@@ -83,7 +86,7 @@ export default {
 
       this.loading = true
       try {
-        const response = await axios.post('http://eink-api.jsanr.dev/api/upload-image', formData, {
+        const response = await axios.post(`${apiURL}/api/upload-image`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
