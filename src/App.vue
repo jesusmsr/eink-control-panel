@@ -1,13 +1,13 @@
 <template>
-  <ImageUploader />
+  <HomeView />
 </template>
 
 <script>
-import ImageUploader from './components/ImageUploader.vue'
+import HomeView from './components/HomeView.vue'
 
 export default {
   components: {
-    ImageUploader,
+    HomeView,
   },
 }
 </script>
