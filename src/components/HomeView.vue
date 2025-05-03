@@ -1,23 +1,45 @@
 <template>
-  <h1 class="text-2xl font-bold mb-6">Control Panel</h1>
+  <h1 class="text-2xl font-bold mb-6">Panel de control</h1>
+
   <div class="mb-2">
-    <strong>🔋Battery:</strong> {{ batteryVoltage ? batteryVoltage.toFixed(2) : 0 }} V ({{
-      batteryPercentage
-    }}%) at
+    <strong>
+      <FontAwesomeIcon v-if="batteryPercentage > 75" icon="battery-full" />
+      <FontAwesomeIcon v-else-if="batteryPercentage > 35" icon="battery-half" />
+      <FontAwesomeIcon v-else icon="battery-empty" />
+      Batería:
+    </strong>
+    {{ batteryVoltage?.toFixed(2) || 0 }} V ({{ batteryPercentage }}%) a
     {{ batteryLastSeenAt }}
   </div>
-  <div class="">
-    <ImageUploader />
+
+  <hr class="my-4 h-0.5 border-t-0 bg-neutral-200" />
+  <ImageUploader />
+
+  <hr class="my-4 h-0.5 border-t-0 bg-neutral-200" />
+
+  <h1 class="text-2xl font-bold mb-6">Historial</h1>
+  <div v-if="imageHistory != null">
+    <ul class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <li v-for="url in imageHistory" :key="url">
+        <img :src="url" alt="Historial" class="w-full rounded border" />
+      </li>
+    </ul>
+  </div>
+  <div v-else>
+    <p>No hay imágenes en el historial.</p>
   </div>
 </template>
 
 <script setup>
-import ImageUploader from './ImageUploader.vue'
 import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
+import ImageUploader from './ImageUploader.vue'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+const apiURL = import.meta.env.VITE_API_URL
 const batteryVoltage = ref(null)
 const batteryLastSeenAt = ref(null)
+let imageHistory = ref()
 
 const batteryPercentage = computed(() => {
   if (batteryVoltage.value !== null) {
@@ -28,11 +50,12 @@ const batteryPercentage = computed(() => {
 
 onMounted(() => {
   fetchBatteryVoltage()
+  fetchImageHistory()
 })
 
 async function fetchBatteryVoltage() {
   try {
-    const response = await axios.get(`${import.meta.env.VITE_API_URL}/battery-latest`)
+    const response = await axios.get(`${apiURL}/battery-latest`)
     const rawDate = new Date(response.data.timestamp)
     batteryVoltage.value = response.data.voltage_level
     batteryLastSeenAt.value = rawDate.toLocaleString('es-ES', {
@@ -42,9 +65,17 @@ async function fetchBatteryVoltage() {
       hour: '2-digit',
       minute: '2-digit',
     })
-    console.log(response)
   } catch (error) {
     console.error('Error fetching battery voltage', error)
+  }
+}
+
+async function fetchImageHistory() {
+  try {
+    const response = await axios.get(`${apiURL}/latest-image`)
+    imageHistory = response.data // asumimos que es un array de strings (URLs)
+  } catch (error) {
+    console.error('Error fetching image history', error)
   }
 }
 
@@ -57,6 +88,6 @@ function voltageToPercentage(voltage) {
   if (voltage >= 3.6) return 20
   if (voltage >= 3.5) return 10
   if (voltage >= 3.4) return 5
-  return 0 // Menos de 3.4V
+  return 0
 }
 </script>
