@@ -17,14 +17,14 @@
 
   <hr class="my-4 h-0.5 border-t-0 bg-neutral-200" />
 
-  <h1 class="text-2xl font-bold mb-6">Historial</h1>
-  <div v-if="imageHistory != null">
-    <ul class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <li v-for="url in imageHistory" :key="url">
-        <img :src="url" alt="Historial" class="w-full rounded border" />
-      </li>
-    </ul>
+  <h1 class="text-2xl font-bold mb-4">Imagen actual</h1>
+  <div v-if="imageHistory?.image_path">
+    <span>Última imagen subida en: {{ historyLastSeenAt }}</span>
+    <div class="max-w-60 mx-auto mt-4">
+      <img :src="imageHistory.image_path" alt="Historial" class="w-full rounded border" />
+    </div>
   </div>
+
   <div v-else>
     <p>No hay imágenes en el historial.</p>
   </div>
@@ -39,7 +39,8 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 const apiURL = import.meta.env.VITE_API_URL
 const batteryVoltage = ref(null)
 const batteryLastSeenAt = ref(null)
-let imageHistory = ref()
+let imageHistory = ref(null)
+let historyLastSeenAt = ref(null)
 
 const batteryPercentage = computed(() => {
   if (batteryVoltage.value !== null) {
@@ -73,7 +74,16 @@ async function fetchBatteryVoltage() {
 async function fetchImageHistory() {
   try {
     const response = await axios.get(`${apiURL}/latest-image`)
-    imageHistory = response.data // asumimos que es un array de strings (URLs)
+    imageHistory.value = response.data
+    const rawDate = new Date(response.data.timestamp)
+    historyLastSeenAt.value = rawDate.toLocaleString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+    console.log(imageHistory)
   } catch (error) {
     console.error('Error fetching image history', error)
   }

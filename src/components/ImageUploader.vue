@@ -136,6 +136,7 @@ export default {
       console.error('Error loading image into the cropper:', error)
     },
     onClearImage() {
+      this.message = null
       this.selectedFile = null
       this.img = null
       this.previewUrl = null
