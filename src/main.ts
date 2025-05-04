@@ -9,10 +9,11 @@ import {
   faBatteryFull,
   faBatteryHalf,
   faBatteryEmpty,
+  faCircleInfo,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faSpinner, faBatteryFull, faBatteryHalf, faBatteryEmpty)
+library.add(faSpinner, faBatteryFull, faBatteryHalf, faBatteryEmpty, faCircleInfo)
 
 const app = createApp(App)
 app.component('FontAwesomeIcon', FontAwesomeIcon)

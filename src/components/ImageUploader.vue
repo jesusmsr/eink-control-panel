@@ -1,6 +1,9 @@
 <template>
   <h1 class="text-xl font-bold mb-4">Subir imagen</h1>
-  <div class="bg-gray-100 p-4">
+  <span
+    ><FontAwesomeIcon icon="fa-circle-info" /> Ten en cuenta que tengo el marco en vertical</span
+  >
+  <div class="bg-gray-100 p-4 mt-2">
     <!-- Input file -->
     <input type="file" @change="onFileChange" accept="image/*" class="hidden" />
 
@@ -33,7 +36,7 @@
     </div>
   </div>
   <div v-if="img" class="flex flex-col justify-center mt-2">
-    <span class="mx-auto"> <FontAwesomeIcon :icon="house" /> Puedes hacer zoom para ajustar</span>
+    <span class="mx-auto">Puedes hacer zoom para ajustar</span>
     <div class="flex flex-row space-x-4 justify-center mt-2">
       <button
         @click="rotate(-90)"

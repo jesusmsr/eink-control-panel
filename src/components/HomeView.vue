@@ -73,7 +73,7 @@ async function fetchBatteryVoltage() {
 
 async function fetchImageHistory() {
   try {
-    const response = await axios.get(`${apiURL}/latest-image`)
+    const response = await axios.get(`${apiURL}/image-last-used`)
     imageHistory.value = response.data
     const rawDate = new Date(response.data.timestamp)
     historyLastSeenAt.value = rawDate.toLocaleString('es-ES', {
@@ -83,7 +83,7 @@ async function fetchImageHistory() {
       hour: '2-digit',
       minute: '2-digit',
     })
-    console.log(imageHistory)
+    console.log(imageHistory.value)
   } catch (error) {
     console.error('Error fetching image history', error)
   }
